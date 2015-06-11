@@ -7,7 +7,9 @@ var gulp = require('gulp'),
     tslint = require('gulp-tslint'),
     sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
-    Config = require('./gulpfile.config');
+    Config = require('./gulpfile.config'),
+    jasmine = require('gulp-jasmine'),
+    notify = require('gulp-notify');
 
 var config = new Config();
 
@@ -73,3 +75,13 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', ['ts-lint', 'compile-ts', 'gen-ts-refs', 'watch']);
+
+gulp.task('test', function() {
+    gulp.src('spec/*.js')
+      .pipe(jasmine())
+      .on('error', notify.onError({
+        title: 'Jasmine Test Failed',
+        message: 'One or more tests failed, see the cli for details.'
+    }));
+});
+
