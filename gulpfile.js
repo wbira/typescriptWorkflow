@@ -8,8 +8,7 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
     Config = require('./gulpfile.config'),
-    jasmine = require('gulp-jasmine'),
-    notify = require('gulp-notify');
+    karma = require('gulp-karma');
 
 var config = new Config();
 
@@ -76,12 +75,13 @@ gulp.task('watch', function() {
 
 gulp.task('default', ['ts-lint', 'compile-ts', 'gen-ts-refs', 'watch']);
 
-gulp.task('test', function() {
-    gulp.src('spec/*.js')
-      .pipe(jasmine())
-      .on('error', notify.onError({
-        title: 'Jasmine Test Failed',
-        message: 'One or more tests failed, see the cli for details.'
-    }));
-});
+gulp.task('test', function(){
+    var testFiles = ['./spec/**/*.js','./src/**/*.js'];
 
+    return gulp.src(testFiles).pipe(karma({
+      configFile: 'karma.conf.js',
+      action: 'run'
+    })).on('error', function(err){
+      throw err;
+    });  
+});
